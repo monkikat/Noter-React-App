@@ -2,7 +2,7 @@ export default function runDevTestFunc() {
 
   return (
     <>
-        <h1>Welcome to Noter.</h1>
+        <h1 className="bg-red-400 text-white">Welcome to Noter.</h1>
     </>
   )
 }
