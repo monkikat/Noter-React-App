@@ -1,12 +1,11 @@
-export default function runDevTestFunc() {
+export default function NotFoundPage() {
 
-  return (
-    <>
-        <h1 className="bg-red-400 text-white">Welcome to Noter.</h1>
-    </>
-  )
+    return (
+        <div>
+            <h1>Page Not Found</h1>
+        </div>
+    )
 }
-
 
 /*
 import { useState } from 'react'
@@ -45,3 +44,4 @@ function App() {
 
 export default App
 */
+
