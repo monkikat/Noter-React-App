@@ -1,16 +1,13 @@
-/*
-import express from 'express'
+console.log('hi monki :)');
+
+import express from 'express';
 //import { mongoDBURL } from './config';
 //import mongoose from 'mongoose';
+import { PORT } from './utils/config';
 
 const app = express();
 app.use(express.json());
 
-const PORT = 5173;
-
 app.listen(PORT, () => {
-    console.log('server started on port ${PORT}')
+    console.log(`server started on port ${PORT}`);
 });
-*/
-
-console.log('hi monki :)');

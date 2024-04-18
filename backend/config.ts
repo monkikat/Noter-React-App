@@ -1,1 +1,0 @@
-export const mongoDBURL = 'mongodb+srv://monkikat:Noh@231099@noter-react-app.pc4bac0.mongodb.net/notebooks-collection?retryWrites=true&w=majority&appName=Noter-React-App' 
