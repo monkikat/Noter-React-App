@@ -1,8 +1,6 @@
-console.log('hi monki :)');
+console.log("hi monki :)");
 
-import express from 'express';
-//import { mongoDBURL } from './config';
-//import mongoose from 'mongoose';
+import * as express from 'express';
 import { PORT } from './utils/config';
 
 const app = express();
