@@ -7,6 +7,10 @@ const getNotebooks = (req: Request, res: Response) => {
 };
 
 const createNotebook = (req: Request, res: Response) => {
+    if (!req.body.title) {
+        res.status(400);
+        throw new Error('Title is required');
+    }
     res.json({
         message: 'create a notebook'
     });
@@ -21,7 +25,7 @@ const getNotebook = (req: Request, res: Response) => {
 const updateNotebook = (req: Request, res: Response) => {
     res.json({
         message: `update notebook ${req.params.id}`
-    });
+    }); 
 };
 
 const deleteNotebook = (req: Request, res: Response) => {
