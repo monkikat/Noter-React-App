@@ -1,13 +1,11 @@
 import {Request, Response} from 'express';
-
 const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 
-const Notebook = require('../models/notebookModel');
-
+import NotebookModel from '../models/notebookModel';
 
 const getNotebooks = asyncHandler (async (req: Request, res: Response) => {
-    const notebooks = await Notebook.find();
+    const notebooks = await NotebookModel.find();
     res.status(200).json(notebooks);
 });
 
@@ -17,7 +15,7 @@ const createNotebook = asyncHandler (async (req: Request, res: Response) => {
         throw new Error('Title is required');
     }
 
-    const notebook = await Notebook.create(req.body);
+    const notebook = await NotebookModel.create(req.body);
     if (!notebook) {
         res.status(400);
         throw new Error('Notebook not created');
@@ -30,7 +28,7 @@ const getNotebook = asyncHandler (async (req: Request, res: Response) => {
         res.status(400)
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const notebook = await Notebook.findById(req.params.id);
+    const notebook = await NotebookModel.findById(req.params.id);
     if (!notebook) {
         res.status(404);
         throw new Error(`Notebook not found`);
@@ -43,7 +41,7 @@ const deleteNotebook = asyncHandler (async (req: Request, res: Response) => {
         res.status(400)
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const notebook = await Notebook.findByIdAndDelete(req.params.id);
+    const notebook = await NotebookModel.findByIdAndDelete(req.params.id);
     if (!notebook) {
         res.status(404);
         throw new Error(`Notebook not found`);
@@ -63,7 +61,7 @@ const updateNotebook = asyncHandler (async (req: Request, res: Response) => {
         res.status(400);
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const notebook = await Notebook.findByIdAndUpdate(req.params.id, req.body, {
+    const notebook = await NotebookModel.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
     });
     if (!notebook) {

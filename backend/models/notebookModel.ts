@@ -1,3 +1,11 @@
+import { model } from "mongoose";
+import notebookSchema, { INotebookSchema } from "../schema/notebookSchema";
+
+const NotebookModel = model<INotebookSchema>("Notebook", notebookSchema);
+
+export default NotebookModel;
+/*
+
 const mongoose = require('mongoose');
 
 const notebookSchema = mongoose.Schema(
@@ -14,3 +22,4 @@ const notebookSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.models.Notebook || mongoose.model('Notebook', notebookSchema);
+*/
