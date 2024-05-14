@@ -1,12 +1,13 @@
 import { checkValidObjectId } from "../database/db";
 import NotebookModel from "../models/notebookModel";
+import { sanitizeNotebook } from "../sanitizers/notebookSanitizer";
 import { INotebookSchema } from "../schema/notebookSchema";
 import { NotebookType } from "../types/notebookTypes";
 
 export async function getNotebooks(): Promise<NotebookType[]> {
     try {
         const notebooks = await NotebookModel.find();
-        if(!notebooks) {
+        if (!notebooks) {
             throw new Error('No projects found');
         }
 
@@ -18,9 +19,11 @@ export async function getNotebooks(): Promise<NotebookType[]> {
 }
 
 export async function createNotebook(notebook: NotebookType): Promise<NotebookType> {
+    const sanitizedNotebook = sanitizeNotebook(notebook);
+
     try {
-        const newNotebook = await NotebookModel.create(notebook);
-        if(!newNotebook) {
+        const newNotebook = await NotebookModel.create(sanitizedNotebook);
+        if (!newNotebook) {
             throw new Error('Notebook could not be created');
         }
 
@@ -35,7 +38,7 @@ export async function getNotebook(notebookId: string): Promise<INotebookSchema> 
     checkValidObjectId(notebookId);
     try {
         const notebook = await NotebookModel.findById(notebookId);
-        if(!notebook) {
+        if (!notebook) {
             throw new Error('No notebook found');
         }
 
@@ -50,7 +53,7 @@ export async function deleteNotebook(notebookId: string): Promise<void> {
     checkValidObjectId(notebookId);
     try {
         const deletedNotebook = await NotebookModel.findByIdAndDelete(notebookId);
-        if(!deletedNotebook) {
+        if (!deletedNotebook) {
             throw new Error('Notebook could not be deleted');
         }
 
@@ -62,10 +65,12 @@ export async function deleteNotebook(notebookId: string): Promise<void> {
 }
 
 export async function updateNotebook(notebookId: string, notebook: NotebookType): Promise<INotebookSchema> {
+    const sanitizedNotebook = sanitizeNotebook(notebook);
     checkValidObjectId(notebookId);
+
     try {
-        const updatedNotebook = await NotebookModel.findByIdAndUpdate(notebookId, notebook, { new: true }); 
-        if(!updatedNotebook) {
+        const updatedNotebook = await NotebookModel.findByIdAndUpdate(notebookId, sanitizedNotebook, { new: true });
+        if (!updatedNotebook) {
             throw new Error('Notebook could not be updated');
         }
 
