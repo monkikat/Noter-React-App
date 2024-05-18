@@ -24,11 +24,10 @@ const getNotebookHandler = asyncHandler(async (req: Request, res: Response) => {
 
 
 const deleteNotebookHandler = asyncHandler(async (req: Request, res: Response) => {
-    const notebook = await deleteNotebook(req.params.id);
+    await deleteNotebook(req.params.id);
 
     res.status(200).json({
         message: `Notebook ${req.params.id} deleted`,
-        notebook: notebook,
     });
 });
 
