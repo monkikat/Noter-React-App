@@ -11,6 +11,6 @@ const {
 } = require('../controllers/userControllers');
 
 router.route('/').get(getUsersHandler).post(createUserHandler);
-router.route('/:id').get(getUserHandler).post(updateUserHandler).delete(deleteUserHandler);
+router.route('/:id').get(getUserHandler).put(updateUserHandler).delete(deleteUserHandler);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { UserType } from "../types/userTypes";
 
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+export const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 export interface IUserSchema extends UserType {
     _id: String,
