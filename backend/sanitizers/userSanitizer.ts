@@ -5,13 +5,16 @@ import { UserType } from "../types/userTypes";
 import { emailRegex } from "../schema/userSchema";
 import HttpException from "../utils/httpException";
 
-export function sanitizeUser(user: UserType): UserType {
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+export async function sanitizeUser(user: UserType): Promise<UserType> {
     let sanitizedUser = <UserType>{};
 
     sanitizedUser.username = sanitizeUsername(user.username);
     sanitizedUser.email = sanitizeEmail(user.email);
     sanitizedUser.isAdmin = sanitizeIsAdmin(user.isAdmin);
-    sanitizedUser.password = user.password;
+    sanitizedUser.password = await sanitizePassword(user.password);
 
     return sanitizedUser;
 }
@@ -57,8 +60,37 @@ function sanitizeEmail(email: string): string {
 }
 
 function sanitizeIsAdmin(isAdmin: boolean): boolean {
-
     if (!isAdmin) isAdmin = false;
 
     return isAdmin;
+}
+
+async function sanitizePassword(password: string): Promise<string> {
+    //types
+    if (password === undefined) {
+        throw new HttpException(400, 'Password is undefined');
+    }
+
+    if (typeof password !== 'string') {
+        throw new HttpException(400, 'Password is not a string');
+    }
+
+    //attributes
+    password = password.trim();
+    const passwordLength = password.length;
+
+    if (passwordLength < 10) {
+        throw new HttpException(400, 'Password must be at least 10 characters long');
+    }
+
+    if (passwordLength > 255) {
+        throw new HttpException(400, 'Password is too long, must be less than 255 characters');
+    }
+
+    //hashing password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    return hashedPassword;
+
 }
