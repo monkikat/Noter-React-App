@@ -3,11 +3,34 @@
 //call sanitize and valid object id check
 //throw error
 
+import bcrypt from 'bcryptjs';
+
 import { checkValidObjectId } from "../database/db";
 import UserModel from "../models/userModel";
-import { sanitizeUser } from "../sanitizers/userSanitizer";
+import { sanitizeUser, sanitizeUserLogin } from "../sanitizers/userSanitizer";
 import { IUserSchema } from "../schema/userSchema";
 import { UserType } from "../types/userTypes";
+
+export async function loginUser(email: string, password: string): Promise<UserType> {
+    const sanitizedUser = await sanitizeUserLogin(email, password);
+
+    try {
+        const user = await UserModel.findOne({ email });
+
+        if (!user) {
+            throw new Error('User not found, email does not match');
+        }
+        else {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) throw new Error('Password is invalid');
+        }
+
+        return user;
+    }
+    catch (err) {
+        throw new Error(`Failed to login user: ${err.message}`);
+    }
+}
 
 export async function getUsers(): Promise<UserType[]> {
     try {

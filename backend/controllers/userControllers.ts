@@ -6,7 +6,16 @@
 import { Request, Response } from 'express';
 const asyncHandler = require('express-async-handler');
 
-import { getUsers, createUser, getUser, updateUser, deleteUser } from '../services/userServices';
+import { loginUser, getUsers, createUser, getUser, updateUser, deleteUser } from '../services/userServices';
+
+//@desc Login user
+//@route POST /api/users/login
+//@access public
+const loginUserHandler = asyncHandler(async (req: Request, res: Response) => {
+    const user = await loginUser(req.body.email, req.body.password);
+
+    res.status(201).json(user);
+});
 
 //@desc Get all users
 //@route GET /api/users
@@ -57,6 +66,7 @@ const updateUserHandler = asyncHandler(async (req: Request, res: Response) => {
 
 
 module.exports = {
+    loginUserHandler,
     getUsersHandler,
     createUserHandler,
     getUserHandler,

@@ -4,6 +4,7 @@
 import { UserType } from "../types/userTypes";
 import { emailRegex } from "../schema/userSchema";
 import HttpException from "../utils/httpException";
+import UserModel from "../models/userModel";
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -12,9 +13,18 @@ export async function sanitizeUser(user: UserType): Promise<UserType> {
     let sanitizedUser = <UserType>{};
 
     sanitizedUser.username = sanitizeUsername(user.username);
-    sanitizedUser.email = sanitizeEmail(user.email);
+    sanitizedUser.email = await sanitizeEmail(user.email);
     sanitizedUser.isAdmin = sanitizeIsAdmin(user.isAdmin);
     sanitizedUser.password = await sanitizePassword(user.password);
+
+    return sanitizedUser;
+}
+
+export async function sanitizeUserLogin(email: string, password: string): Promise<UserType> {
+    let sanitizedUser = <UserType>{};
+
+    sanitizedUser.email = sanitizeLoginEmail(email);
+    sanitizedUser.password = await sanitizePassword(password);
 
     return sanitizedUser;
 }
@@ -33,13 +43,44 @@ function sanitizeUsername(username: string): string {
     return username;
 }
 
-function sanitizeEmail(email: string): string {
+async function sanitizeEmail(email: string): Promise<string> {
     //types
     if (email === undefined) {
         throw new HttpException(400, 'Email is undefined');
     }
     if (typeof email !== 'string') {
-        throw new HttpException(400, 'Username is not a string');
+        throw new HttpException(400, 'Email is not a string');
+    }
+
+    //attributes
+    email = email.trim();
+    const emailLength = email.length;
+
+    const user = await UserModel.findOne({ email });
+    if (user) {
+        throw new HttpException(400, 'Duplicate email, account with this email already exists')
+    }
+
+    if (emailLength < 3) {
+        throw new HttpException(400, 'Email must be atleast 3 characters');
+    }
+    if (emailLength > 320) {
+        throw new HttpException(400, 'Email must be shorter than 320 characters');
+    }
+    if (!email.match(emailRegex)) {
+        throw new HttpException(400, 'Email is not valid');
+    }
+
+    return email;
+}
+
+function sanitizeLoginEmail(email: string): string {
+    //types
+    if (email === undefined) {
+        throw new HttpException(400, 'Email is undefined');
+    }
+    if (typeof email !== 'string') {
+        throw new HttpException(400, 'Email is not a string');
     }
 
     //attributes
